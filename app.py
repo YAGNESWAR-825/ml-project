@@ -1,6 +1,11 @@
 import streamlit as st
 import pandas as pd
-import joblib
+import pickle
+
+# Load pre-trained model using pickle
+model_filename = '/mnt/data/linear_regression_model.pkl'  # Replace with your model file path if different
+with open(model_filename, 'rb') as file:
+    model = pickle.load(file)
 
 # Load dataset to extract feature columns
 file_path = '/mnt/data/country_comparison_large_dataset.csv'  # Path to the uploaded dataset
@@ -9,10 +14,6 @@ data = pd.read_csv(file_path)
 # Step 1: Extract feature columns (excluding the target column 'GDP (current US$)')
 target_column = 'GDP (current US$)'  # Assuming 'GDP (current US$)' is the target column
 feature_columns = [col for col in data.columns if col != target_column]
-
-# Load pre-trained model
-model_filename = '/mnt/data/linear_regression_model.pkl'  # Replace with your model file path if different
-model = joblib.load(model_filename)
 
 # Step 2: App Title
 st.title("Economic Indicator Prediction App")
