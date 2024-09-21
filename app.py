@@ -7,41 +7,45 @@ import pandas as pd
 model_filename = 'linear_regression_model.pkl'  # The saved model file
 model = joblib.load(model_filename)
 
-# Step 2: Load the dataset to get feature columns
-data_path = 'country_comparison_large_dataset.csv'  # Path to your dataset
-data = pd.read_csv(data_path)
+# Step 2: Let the user upload the dataset file
+uploaded_file = st.file_uploader("Upload your dataset CSV file", type="csv")
 
-# Exclude the target column (GDP) and keep only the feature columns
-target_column = 'GDP (current US$)'  # Adjust the name if needed
-feature_columns = [col for col in data.columns if col != target_column]
+if uploaded_file is not None:
+    data = pd.read_csv(uploaded_file)
 
-# Step 3: Create the Streamlit app
-st.title("GDP Prediction Model Deployment")
+    # Exclude the target column (GDP) and keep only the feature columns
+    target_column = 'GDP (current US$)'  # Adjust the name if needed
+    feature_columns = [col for col in data.columns if col != target_column]
 
-# Step 4: Define input fields for the features
-st.header("Input Feature Values")
+    # Step 3: Create the Streamlit app
+    st.title("GDP Prediction Model Deployment")
 
-# Create input fields for each feature dynamically
-user_input = {}
-for feature in feature_columns:
-    user_input[feature] = st.number_input(f'Enter value for {feature}', value=0.0)
+    # Step 4: Define input fields for the features
+    st.header("Input Feature Values")
 
-# Step 5: Convert user input to a DataFrame
-input_df = pd.DataFrame([user_input])
+    # Create input fields for each feature dynamically
+    user_input = {}
+    for feature in feature_columns:
+        user_input[feature] = st.number_input(f'Enter value for {feature}', value=0.0)
 
-# Step 6: Make predictions
-if st.button('Predict'):
-    # Ensure that the input DataFrame has the correct order of columns as expected by the model
-    input_df = input_df.reindex(columns=feature_columns)
+    # Step 5: Convert user input to a DataFrame
+    input_df = pd.DataFrame([user_input])
 
-    # Make predictions
-    prediction = model.predict(input_df)[0]  # Predict GDP value
+    # Step 6: Make predictions
+    if st.button('Predict'):
+        # Ensure that the input DataFrame has the correct order of columns as expected by the model
+        input_df = input_df.reindex(columns=feature_columns)
 
-    # Display the prediction result
-    st.subheader("Prediction Result:")
-    st.write(f"The predicted GDP is: ${prediction:,.2f}")
+        # Make predictions
+        prediction = model.predict(input_df)[0]  # Predict GDP value
 
-# Optional: Display information about the dataset and feature importance
-if st.checkbox('Show Dataset Information'):
-    st.write("Dataset columns:", data.columns)
-    st.write("Dataset info:", data.info())
+        # Display the prediction result
+        st.subheader("Prediction Result:")
+        st.write(f"The predicted GDP is: ${prediction:,.2f}")
+
+    # Optional: Display information about the dataset and feature importance
+    if st.checkbox('Show Dataset Information'):
+        st.write("Dataset columns:", data.columns)
+        st.write("Dataset info:", data.info())
+else:
+    st.write("Please upload a CSV file to proceed.")
