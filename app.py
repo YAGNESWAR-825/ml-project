@@ -7,7 +7,7 @@ model_filename = 'linear_regression_model.pkl'  # The saved model file
 model = joblib.load(model_filename)
 
 # Step 2: Load the dataset to get column names (you provided a file earlier, we'll assume it's already uploaded)
-data_path = '/mnt/data/country_comparison_large_dataset.csv'  # Adjust the path as needed
+data_path = 'country_comparison_large_dataset.csv'  # Adjust the path as needed
 data = pd.read_csv(data_path)
 
 # Exclude the target column (GDP) and keep only the feature columns
